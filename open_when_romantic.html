@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Open When... ♡</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Quicksand:wght@400;500;600;700&family=Sacramento&display=swap');
+
+*{box-sizing:border-box}
+body{
+  margin:0;
+  min-height:100vh;
+  font-family:'Quicksand',sans-serif;
+  color:#5c4560;
+  overflow-x:hidden;
+  background:
+    radial-gradient(circle at 10% 10%, rgba(255,255,255,.9) 0 7%, transparent 8%),
+    linear-gradient(135deg,#ffdce9 0%,#f5e2f7 45%,#dceeff 100%);
+}
+body:before{
+  content:"";
+  position:fixed; inset:0; pointer-events:none; opacity:.45;
+  background-image:radial-gradient(#fff 1px,transparent 1px);
+  background-size:28px 28px;
+}
+.container{width:min(1050px,92%);margin:auto;position:relative;z-index:2}
+header{text-align:center;padding:70px 15px 35px}
+.small{font-size:13px;letter-spacing:4px;text-transform:uppercase;color:#9b739a;font-weight:700}
+h1{
+  font-family:'Sacramento',cursive;
+  font-size:clamp(70px,12vw,125px);
+  line-height:.85;margin:14px 0 12px;
+  color:#9c6eaa;
+  text-shadow:2px 3px 0 rgba(255,255,255,.8);
+}
+.subtitle{font-size:16px;color:#765e78;max-width:600px;margin:auto;line-height:1.7}
+.divider{margin:24px auto;width:110px;color:#c78caf;letter-spacing:7px}
+
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(210px,1fr));
+  gap:20px;padding:20px 0 60px;
+}
+.card{
+  border:1px solid rgba(255,255,255,.7);
+  background:rgba(255,255,255,.53);
+  backdrop-filter:blur(12px);
+  border-radius:26px;
+  padding:28px 20px;
+  text-align:center;
+  cursor:pointer;
+  box-shadow:0 12px 35px rgba(135,105,150,.13);
+  transition:.3s ease;
+  position:relative;
+  overflow:hidden;
+}
+.card:after{
+  content:"";
+  position:absolute;width:90px;height:90px;border-radius:50%;
+  background:rgba(255,255,255,.28);right:-35px;top:-35px;
+}
+.card:hover{transform:translateY(-7px) rotate(-1deg);box-shadow:0 18px 40px rgba(135,105,150,.2)}
+.envelope{
+  width:78px;height:58px;margin:0 auto 18px;position:relative;
+  background:#fff;
+  border-radius:7px;
+  box-shadow:0 7px 15px rgba(120,90,130,.13);
+}
+.envelope:before{
+  content:"";position:absolute;left:0;top:0;
+  border-left:39px solid transparent;border-right:39px solid transparent;
+  border-top:31px solid #f3c9dc;
+}
+.envelope:after{
+  content:"♡";position:absolute;left:0;right:0;bottom:-1px;
+  color:#b8799d;font-size:21px;
+}
+.card h3{font-family:'DM Serif Display',serif;font-size:20px;margin:0 0 7px;color:#725175}
+.card p{margin:0;font-size:13px;color:#8a718b}
+
+footer{text-align:center;padding:15px 0 50px;font-size:13px;color:#927792}
+footer span{color:#c879a1}
+
+.floating{
+  position:fixed;pointer-events:none;z-index:1;
+  animation:floatUp linear infinite;opacity:.6;
+}
+@keyframes floatUp{
+  from{transform:translateY(110vh) rotate(0deg);opacity:0}
+  15%{opacity:.65}
+  to{transform:translateY(-15vh) rotate(25deg);opacity:0}
+}
+
+.modal{
+  position:fixed;inset:0;background:rgba(75,53,85,.35);
+  backdrop-filter:blur(8px);display:none;align-items:center;justify-content:center;
+  padding:20px;z-index:10;
+}
+.modal.show{display:flex}
+.letter{
+  width:min(620px,100%);
+  max-height:88vh;overflow:auto;
+  background:linear-gradient(145deg,#fff8fc,#f7fbff);
+  border:2px solid rgba(255,255,255,.9);
+  border-radius:30px;padding:35px;
+  box-shadow:0 25px 80px rgba(62,40,70,.25);
+  position:relative;
+  animation:pop .35s ease;
+}
+@keyframes pop{from{transform:scale(.9);opacity:0}to{transform:scale(1);opacity:1}}
+.close{
+  position:absolute;right:18px;top:14px;border:0;background:none;
+  font-size:28px;color:#a7779e;cursor:pointer;
+}
+.letter .icon{font-size:40px;text-align:center}
+.letter h2{
+  text-align:center;font-family:'Sacramento',cursive;
+  font-size:52px;color:#a06ca0;margin:8px 0 15px;
+}
+.message{
+  background:rgba(255,255,255,.7);border-radius:20px;padding:22px;
+  line-height:1.9;font-size:15px;white-space:pre-line;
+  border:1px solid #f1dce9;
+}
+.signature{text-align:right;font-family:'Sacramento',cursive;font-size:31px;color:#a36f99;margin-top:15px}
+.hint{text-align:center;font-size:12px;color:#9c849c;margin-top:20px}
+
+.music{
+  position:fixed;right:20px;bottom:20px;z-index:5;
+  border:1px solid rgba(255,255,255,.8);
+  background:rgba(255,255,255,.65);backdrop-filter:blur(10px);
+  color:#795879;border-radius:50px;padding:11px 16px;
+  font-family:'Quicksand';font-weight:700;cursor:pointer;
+}
+@media(max-width:600px){
+  header{padding-top:50px}
+  .grid{grid-template-columns:1fr 1fr;gap:12px}
+  .card{padding:22px 10px}
+  .card h3{font-size:17px}
+  .letter{padding:28px 20px}
+}
+@media(max-width:390px){.grid{grid-template-columns:1fr}}
+</style>
+</head>
+
+<body>
+<div id="hearts"></div>
+
+<div class="container">
+<header>
+  <div class="small">a little collection of Aaru's heart</div>
+  <h1>Open When...</h1>
+  <div class="divider">♡ · ♡ · ♡</div>
+  <p class="subtitle">
+    For all the moments when I can't be right there beside you,
+    here's a little piece of Aaru waiting for you. 🩷
+  </p>
+</header>
+
+<main class="grid" id="cards"></main>
+
+<footer>made with <span>♡</span> by Aaru for Cutu Jalkukra</footer>
+</div>
+
+<button class="music" id="musicBtn">♫ little soundtrack</button>
+
+<div class="modal" id="modal">
+  <div class="letter">
+    <button class="close" id="close">×</button>
+    <div class="icon" id="letterIcon">💌</div>
+    <h2 id="letterTitle"></h2>
+    <div class="message" id="letterMessage"></div>
+    <div class="signature">love, Aaru ♡</div>
+    <div class="hint">close this little letter whenever you're ready</div>
+  </div>
+</div>
+
+<audio id="audio" loop>
+  <!-- Replace this with your own audio file if you want music:
+  <source src="your-song.mp3" type="audio/mpeg">
+  -->
+</audio>
+
+<script>
+const notes = [
+  {
+    icon:"💗", title:"Open when you miss me",
+    sub:"when the distance feels a little too big",
+    text:`awweeee , if u opened this , i gues u r missing me 🩷
+
+so, imagine me sitting right beside u with no distance just , holding your hand and telling how much i love u.
+
+i hope that uk , even if we r far apart, u still have a lil place in my everyday so called 'busy' life. In random songs, stupid jokes,tiny things i want to tell u and alllllll those moments when my first tgought is => I WISH U WERE HERE..
+
+Until I can actually be there, consider this a tiny virtual hug ♡`
+  },
+  {
+    icon:"🩵", title:"Open when you're having a bad day",
+    sub:"for the days that just aren't it",
+    text:`Hey.
+
+Whtever happened tdy , fuck it ok. u dont have to figure everything out right now!
+Take a deep breath. Drink h20 (hehe) i mean water and just relax.
+its ok to have bad days and bad mood. 
+
+its gonna be alr <3 m w u. dw u can tell me everything and i wont judge u ever. Anything feels like a burden , u can alwaysssssssss tell me. MWAH
+
+ rooting for u from wherever i m! Always! 🩵`
+  },
+  {
+    icon:"💕", title:"Open when we're fighting",
+    sub:"when words aren't coming out right",
+    text:`Okay. First: breatheeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
+
+Second: rememberrr we r on same teammmmmm!
+
+even when we r annoyed (mostly i am ikkk srrryyy bby), stubborn, confused or convinced tht we both r right => 😭pls be calm (ik ull be CZ U R DA BEST) dont let one bad thing get b/w us. 
+I may need sme time to cool down bt ik ill soon realise shit. i may sound rude bt ill always care n choose us.
+Come back when u r ready. We'll figure it out tgggg ♡`
+  },
+  {
+    icon:"🌙", title:"Open when you can't sleep",
+    sub:"for those ridiculously late nights",
+    text:`since u r alr awake...............
+
+close ur eyes for a second and imagine we r smewhere quiet w no notifis. Its dark n only moon light on us.Mybe we r tlking abt absolutely ntg. Mybe we r laughing abt smtg tht isnt even funny. Mybe we r just so close tht its hard to express. 
+until tht becomes real, GO SLEEP 😂😂😂
+mwahhhh love uuuu
+Now please go to sleep. 😭🌙`
+  },
+  {
+    icon:"🎀", title:"Open when you need to smile",
+    sub:"emergency happiness department",
+    text:`HELLO.
+
+This is ur official reminder tht u r legally required to smile right now!
+
+Yes, I made this entire website just for u!
+
+Yes, u still have to smile!
+
+No, there is no arguing w the management!
+nope, no reasons!
+
+Ok fine — here's your actual reason:
+
+u make my life happier just by being in it
+
+Now smileeeeeeeeeeeeeeeeeeee! I can somehow sense when you don't, huh.SO SMILE DUFFER ♡`
+  },
+  {
+    icon:"✨", title:"Open when you need a reminder of us",
+    sub:"when you need to remember the good stuff",
+    text:`Think about all the little things that became “ours”
+
+The jokes nobody else would understand
+The conversations that went on way too long
+The random screenshots
+The late night talks we wish we could replay
+The ordinary days that somehow became memories just by being on text
+The people we bitch about hehehe
+
+That's all wht I love most!
+
+tiny pieces making storiessssssssss
+
+And we r nowhere near the end of it hehe ✨`
+  },
+  {
+    icon:"💌", title:"Open when you want to know what I'm thinking",
+    sub:"a tiny peek inside my brain",
+    text:`Right now?
+like sabki bas ki nhi hai to know wht m thinking yk. m just special like tht
+bt , just in caseee
+
+m probably thinking about my so called "academic life" or my love life. hehehe only these 2 always in my mind.
+
+ wondering whether u smile while reading my texts.
+
+ thinking when will we meet
+
+And, obv, wondering how I somehow managed to make you click every single envelope. 😭
+
+But underneath all of that...
+
+m just really grateful you r here.`
+  },
+  {
+    icon:"🫧", title:"Open when you want to feel close to me",
+    sub:"a tiny piece of me, from wherever I am",
+    text:`If I could press a button and appear next to you for long time, I would.
+
+I would prolly say something completely random, make you laugh, and then refuse to cme very close to u bt not leave u either.
+then when u hold me close i would kiss u n run away >_<
+
+Until teleportation becomes a thing, u'll have to settle for this.
+
+mwah
+
+ 🫧♡`
+  }
+];
+
+const cards = document.getElementById("cards");
+const modal = document.getElementById("modal");
+const title = document.getElementById("letterTitle");
+const message = document.getElementById("letterMessage");
+const icon = document.getElementById("letterIcon");
+
+notes.forEach((n,i)=>{
+  const card=document.createElement("div");
+  card.className="card";
+  card.innerHTML=`
+    <div class="envelope"></div>
+    <h3>${n.title}</h3>
+    <p>${n.sub}</p>
+  `;
+  card.addEventListener("click",()=>{
+    icon.textContent=n.icon;
+    title.textContent=n.title;
+    message.textContent=n.text;
+    modal.classList.add("show");
+  });
+  cards.appendChild(card);
+});
+
+document.getElementById("close").onclick=()=>modal.classList.remove("show");
+modal.addEventListener("click",e=>{
+  if(e.target===modal) modal.classList.remove("show");
+});
+document.addEventListener("keydown",e=>{
+  if(e.key==="Escape") modal.classList.remove("show");
+});
+
+/* floating hearts + sparkles */
+const symbols=["♡","♥","✦","✧","🩷","🩵"];
+for(let i=0;i<28;i++){
+  const s=document.createElement("div");
+  s.className="floating";
+  s.textContent=symbols[Math.floor(Math.random()*symbols.length)];
+  s.style.left=Math.random()*100+"vw";
+  s.style.fontSize=(10+Math.random()*18)+"px";
+  s.style.animationDuration=(7+Math.random()*9)+"s";
+  s.style.animationDelay=(-Math.random()*15)+"s";
+  document.getElementById("hearts").appendChild(s);
+}
+
+/* Optional music button */
+const musicBtn=document.getElementById("musicBtn");
+const audio=document.getElementById("audio");
+musicBtn.onclick=()=>{
+  if(!audio.src){
+    alert("Add your own MP3 file in the <audio> section of the HTML to use music.");
+    return;
+  }
+  if(audio.paused){audio.play();musicBtn.textContent="♫ playing..."}
+  else{audio.pause();musicBtn.textContent="♫ little soundtrack"}
+};
+</script>
+</body>
+</html>
